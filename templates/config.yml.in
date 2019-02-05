@@ -1,0 +1,110 @@
+scope: "@VERSION@-@CLUSTER@"
+namespace: "/postgresql-common/"
+name: @HOSTNAME@
+
+@DCS_CONFIG@
+
+restapi:
+  listen: @HOSTIP@:@API_PORT@
+  connect_address: @HOSTIP@:@API_PORT@
+#  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
+#  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
+#  authentication:
+#    username: username
+#    password: password
+
+# ctl:
+#   insecure: false # Allow connections to SSL sites without certs
+#   certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
+#   cacert: /etc/ssl/certs/ssl-cacert-snakeoil.pem
+
+bootstrap:
+  # Custom bootstrap method
+  method: pg_createcluster
+  pg_createcluster:
+    command: /usr/share/patroni/pg_createcluster_patroni
+
+  # this section will be written into Etcd:/<namespace>/<scope>/config after initializing new cluster
+  # and all other cluster members will use it as a `global configuration`
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+#    master_start_timeout: 300
+#    synchronous_mode: false
+#    standby_cluster:
+#      host: 127.0.0.1
+#      port: 1111
+#      primary_slot_name: patroni
+    postgresql:
+      use_pg_rewind: true
+      remove_data_directory_on_diverged_timelines: true
+#      use_slots: true
+      # The following parameters are given as command line options
+      # overriding the settings in postgresql.conf.
+      parameters:
+#        wal_level: hot_standby
+#        hot_standby: "on"
+#        wal_keep_segments: 8
+#        max_wal_senders: 10
+#        max_replication_slots: 10
+#        max_worker_processes = 8
+#        wal_log_hints: "on"
+#        track_commit_timestamp = "off"
+#      recovery_conf:
+#        restore_command: cp ../wal_archive/%f %p
+      # Set pg_hba.conf to the following values after bootstrapping or cloning.
+      # If you want to allow regular connections from the local network, or
+      # want to use pg_rewind, you need to uncomment the fourth entry.
+      pg_hba:
+      - local   all             all                                     peer
+      - host    all             all             127.0.0.1/32            md5
+      - host    all             all             ::1/128                 md5
+      - host    all             all             @NETWORK@               md5
+      - local   replication     all                                     peer
+      - host    replication     all             127.0.0.1/32            md5
+      - host    replication     all             ::1/128                 md5
+      - host    replication     all             @NETWORK@               md5
+  # Some additional users users which needs to be created after initializing new cluster
+  users:
+    {{ patroni_default_admin_user }}:
+      password: "{{ patroni_default_admin_pass }}"
+      options:
+        - createrole
+        - createdb
+        - superuser
+
+postgresql:
+  # Custom clone method
+  create_replica_method:
+    - pg_clonecluster
+  pg_clonecluster:
+    command: /usr/share/patroni/pg_clonecluster_patroni
+
+  listen: "@HOSTIP@,127.0.0.1:@PORT@"
+  connect_address: @HOSTIP@:@PORT@
+  use_unix_socket: true
+  data_dir: {{ postgresql_data_dir_base }}/@VERSION@/@CLUSTER@
+  bin_dir: /usr/lib/postgresql/@VERSION@/bin
+  config_dir: /etc/postgresql/@VERSION@/@CLUSTER@
+  pgpass: /var/lib/postgresql/@VERSION@-@CLUSTER@.pgpass
+  authentication:
+    replication:
+      username: "{{ patroni_replication_user }}"
+      password: "{{ patroni_replication_pass }}"
+# A superuser role is required in order for Patroni to manage the local
+# Postgres instance.  If the option `use_unix_socket' is set to `true', then
+# specifying an empty password results in no md5 password for the superuser
+# being set and sockets being used for authentication. The `password:' line is
+# nevertheless required.  Note that pg_rewind will not work if no md5 password
+# is set.
+    superuser:
+      username: postgres
+      password: "{{ patroni_postgres_pass }}"
+  parameters:
+    unix_socket_directories: '/var/run/postgresql/'
+    # Emulate default Debian/Ubuntu logging
+    logging_collector: 'on'
+    log_directory: '/var/log/postgresql'
+    log_filename: 'postgresql-@VERSION@-@CLUSTER@.log'

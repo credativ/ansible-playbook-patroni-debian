@@ -1,0 +1,40 @@
+---
+
+- name: Install consul package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - consul
+
+  # At this point we deploy the server config.
+- name: Copy consul server configuration
+  template:
+    src: templates/consul-server.json
+    dest: /etc/consul.d/server.json
+    mode: 0644
+  when: "'{{ consul_group }}' in group_names"
+  tags:
+    - config
+
+  # At this point we deploy the client config.
+- name: Copy consul client configuration
+  template:
+    src: templates/consul-client.json
+    dest: /etc/consul.d/client.json
+    mode: 0644
+  when: "'{{ consul_group }}' not in group_names"
+  tags:
+    - config
+
+- name: Copy consul-server.service file
+  copy:
+    src: files/consul.service
+    dest: /etc/systemd/system/consul.service
+    
+- name: systemctl daemon-reload / start consul
+  systemd:
+    daemon_reload: yes
+    name: consul
+    state: restarted
+    enabled: yes

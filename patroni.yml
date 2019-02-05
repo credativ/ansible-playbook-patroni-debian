@@ -1,0 +1,14 @@
+---
+- name: DCS
+  hosts: "{{ dcs }}"
+  vars_files:
+    - vars.yml
+  become: true
+  become_user: root
+  become_method: sudo
+
+  tasks:
+    - include: tasks/{{ dcs }}.yml
+
+- name: PostgreSQL Server Playbook
+  import_playbook: pgsql-server.yml

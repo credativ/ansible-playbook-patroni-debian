@@ -1,0 +1,55 @@
+---
+
+- name: Install etcd package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - etcd-server
+  when: ((ansible_distribution_release != "stretch") and (ansible_distribution_release != "xenial"))
+
+- name: Install etcd package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - etcd
+  when: (ansible_distribution_release == "xenial")
+
+- name: Setup snapshot repository
+  apt_repository:
+    repo: 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/20161015T102332Z/ testing main'
+    filename: 'snapshot'
+    update_cache: true
+  when: (ansible_distribution_release == "stretch")
+
+- name: Install etcd package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - etcd=2.3.7+dfsg-5
+  when: (ansible_distribution_release == "stretch")
+
+- name: Enable client listen interface
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_LISTEN_CLIENT_URLS=\"http://localhost:2379,http://{{ hostvars['master']['ansible_eth0']['ipv4']['address'] }}:2379\""
+    regexp: ".*ETCD_LISTEN_CLIENT_URLS.*"
+  tags:
+    - config
+
+- name: Advertise client interface
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_ADVERTISE_CLIENT_URLS=\"http://localhost:2379,http://localhost:4001\""
+    regexp: ".*ETCD_ADVERTISE_CLIENT_URLS.*"
+  tags:
+    - config
+
+- name: systemctl daemon-reload / start etcd
+  systemd:
+    daemon_reload: yes
+    name: etcd
+    state: restarted
+    enabled: yes

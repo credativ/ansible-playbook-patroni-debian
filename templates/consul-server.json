@@ -1,0 +1,12 @@
+{
+  "datacenter": "{{ consul_datacenter }}",
+  "data_dir": "/var/lib/consul",
+  "log_level": "INFO",
+  "server": true,
+  "leave_on_terminate": true,
+  "encrypt": "Ela5/Zgs4Fg9BjArcik5Kw==",
+  "bootstrap_expect": {{ groups[consul_group] | length }},
+  "retry_join": [ {% for node in groups[consul_group] %}
+{{ '"' + hostvars[node]['ansible_default_ipv4']['address'] + '"' }}{% if not loop.last %},{% endif %}
+    {% endfor %}]
+}

@@ -1,0 +1,69 @@
+---
+
+- import_tasks: systemd-backports.yml
+  when: (ansible_distribution_release == "stretch")
+
+- name: Install patroni package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - patroni
+
+- name: Install consul client package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python3-consul
+  when: dcs == "consul"
+
+- name: Install zookeeper client package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python3-kazoo
+  when: dcs == "zookeeper"
+
+- name: Install etcd client package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - python3-etcd
+  when: dcs == "etcd"
+
+- name: Deploy patroni DCS config
+  template:
+    src: templates/dcs.yml
+    dest: /etc/patroni/dcs.yml
+    mode: 0640
+    owner: "postgres"
+    group: "postgres"
+  tags:
+    - config
+
+- name: Deploy patroni config templates
+  template:
+    src: templates/config.yml.in
+    dest: /etc/patroni/config.yml.in
+    mode: 0640
+    owner: "postgres"
+    group: "postgres"
+  tags:
+    - config
+
+- name: Create patroni configuration
+  command: pg_createconfig_patroni --force --scope={{ postgresql_major_version }}/{{ postgresql_cluster_name }} --hostip={{ ansible_default_ipv4.address }} {% if postgresql_port is defined %}--port={{ postgresql_port }}{% endif %}
+  tags:
+    - config
+
+- name: systemctl daemon-reload / start patroni
+  systemd:
+    daemon_reload: yes
+    name: patroni@{{ postgresql_major_version }}-{{ postgresql_cluster_name }}
+    state: restarted
+    enabled: yes
+  tags:
+    - config

@@ -1,0 +1,15 @@
+{% if dcs == 'consul' %}
+# We depend on a local patroni client
+consul:
+  host: 127.0.0.1:8500
+{% endif %}
+{% if  dcs == 'zookeeper' %}
+zookeeper:
+  hosts:
+    - {{ dcs_server }}:2181
+{% endif %}
+{% if  dcs == 'etcd' %}
+etcd:
+  hosts:
+    - {{ dcs_server }}:2379
+{% endif %}

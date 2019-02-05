@@ -1,0 +1,23 @@
+---
+
+- name: Install zookeeper package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - zookeeperd
+
+- name: Disable ipv6
+  lineinfile:
+    dest: "/etc/default/zookeeper"
+    line: "JAVA_OPTS=\"-Djava.net.preferIPv4Stack=true\""
+    regexp: ".*JAVA_OPTS.*"
+  tags:
+    - config
+
+- name: systemctl daemon-reload / start zookeeper
+  systemd:
+    daemon_reload: yes
+    name: zookeeper
+    state: restarted
+    enabled: yes
