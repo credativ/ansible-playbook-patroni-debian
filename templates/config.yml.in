@@ -39,6 +39,7 @@ bootstrap:
 #      primary_slot_name: patroni
     postgresql:
       use_pg_rewind: true
+      remove_data_directory_on_rewind_failure: true
       remove_data_directory_on_diverged_timelines: true
 #      use_slots: true
       # The following parameters are given as command line options
