@@ -8,4 +8,6 @@ postgresql_major_version: "11"
 postgresql_data_dir_base: "/var/lib/postgresql"
 patroni_replication_user: "replicator"
 patroni_replication_pass: "replicator"
+# patroni_postgres_pass needs to be set if pg_rewind is to be used to get
+# diverged former primaries back online without a full re-clone
 patroni_postgres_pass: ""
