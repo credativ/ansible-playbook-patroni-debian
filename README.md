@@ -71,3 +71,12 @@ ansible-playbook -i inventory -e postgresql_cluster_name=patroni2 --tags=config 
 
 will result in a second cluster, `11/patroni2` using PostgreSQL port 5433 and
 Patroni API port 8009.
+
+Rewinding outdated former primaries
+-----------------------------------
+
+If a failover has occured and the old leader has additional transactions that
+do not allow for a clean change of timeline, `pg_rewind` can be  used in order
+to rewind the old leader so that it can reinitiate streaming replication to the
+new leader.  For this to happen, the variable `patroni_postgres_pass` needs to
+be set in `vars.yml`.
