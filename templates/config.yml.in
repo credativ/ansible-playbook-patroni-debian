@@ -93,7 +93,8 @@ postgresql:
 # is set.
     superuser:
       username: postgres
-      password: "{{ patroni_postgres_pass }}"
+      password: {% if patroni_postgres_pass|length %}"{{ patroni_postgres_pass }}"{% endif %}
+
   parameters:
     unix_socket_directories: '/var/run/postgresql/'
     # Emulate default Debian/Ubuntu logging
