@@ -66,14 +66,6 @@ bootstrap:
       - host    replication     all             127.0.0.1/32            md5
       - host    replication     all             ::1/128                 md5
       - host    replication     all             @NETWORK@               md5
-  # Some additional users users which needs to be created after initializing new cluster
-  users:
-    {{ patroni_default_admin_user }}:
-      password: "{{ patroni_default_admin_pass }}"
-      options:
-        - createrole
-        - createdb
-        - superuser
 
 postgresql:
   # Custom clone method
