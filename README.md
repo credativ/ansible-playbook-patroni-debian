@@ -49,7 +49,7 @@ The following useful variables can be set:
 
  * `dcs` (`etcd` (default), `consul` or `zookeeper`)
  * `dcs_server` (default: IP of `master` node)
- * `postgresql_cluster_name` (default: patroni)
+ * `postgresql_cluster_name` (default: test)
  * `postgresql_major_version` (default: 11)
  * `postgresql_data_dir_base` (default: `/var/lib/postgresql`)
  * `patroni_replication_user` (default: `replicator`)
@@ -66,10 +66,10 @@ configuration generation will increment this for every additional cluster, so
 running
 
 ```
-ansible-playbook -i inventory -e postgresql_cluster_name=patroni2 --tags=config pgsql-server.yml
+ansible-playbook -i inventory -e postgresql_cluster_name=test2 --tags=config pgsql-server.yml
 ```
 
-will result in a second cluster, `11/patroni2` using PostgreSQL port 5433 and
+will result in a second cluster, `11/test2` using PostgreSQL port 5433 and
 Patroni API port 8009.
 
 Rewinding/Recloning outdated former primaries
