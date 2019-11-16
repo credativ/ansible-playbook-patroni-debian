@@ -42,7 +42,7 @@
 - name: Advertise client interface
   lineinfile:
     dest: "/etc/default/etcd"
-    line: "ETCD_ADVERTISE_CLIENT_URLS=\"http://localhost:2379,http://localhost:4001\""
+    line: "ETCD_ADVERTISE_CLIENT_URLS=\"http://{{ hostvars['master']['ansible_eth0']['ipv4']['address'] }}:2379,http://{{ hostvars['master']['ansible_eth0']['ipv4']['address'] }}:4001\""
     regexp: ".*ETCD_ADVERTISE_CLIENT_URLS.*"
   tags:
     - config
