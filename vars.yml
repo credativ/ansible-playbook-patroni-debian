@@ -11,3 +11,5 @@ patroni_replication_pass: "replicator"
 # patroni_postgres_pass needs to be set if pg_rewind is to be used to get
 # diverged former primaries back online without a full re-clone
 patroni_postgres_pass: ""
+# vip-manager will manage the vip on each node if set
+#vip: "10.0.1.1"

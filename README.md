@@ -55,6 +55,7 @@ The following useful variables can be set:
  * `patroni_replication_user` (default: `replicator`)
  * `patroni_replication_pass`
  * `patroni_postgres_pass`
+ * `vip`
 
 Example: `ansible-playbook -i inventory -e dcs=consul patroni.yml`
 
@@ -71,6 +72,17 @@ ansible-playbook -i inventory -e postgresql_cluster_name=test2 --tags=config pgs
 
 will result in a second cluster, `11/test2` using PostgreSQL port 5433 and
 Patroni API port 8009.
+
+Managing a virtual IP address with `vip-manager`
+------------------------------------------------
+
+The `vip-manager` package allows to expose a virtual IP address (VIP) for the
+leader node by monitoring the leader key in the DCS and setting or removing the
+configured VIP for the local node depending on leader status.
+
+When the `vip` variable is set to an IP address, an appropriate configuration
+file for `vip-manager` will be written and the cluster-specific `vip-manager`
+service will be started.
 
 Rewinding/Recloning outdated former primaries
 ---------------------------------------------
