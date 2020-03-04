@@ -5,41 +5,31 @@
 
 - name: Install patroni package
   package:
-    name: "{{ item }}"
+    name: patroni
     state: present
-  with_items:
-  - patroni
 
 - name: Install consul client package
   package:
-    name: "{{ item }}"
+    name: python3-consul
     state: present
-  with_items:
-  - python3-consul
   when: dcs == "consul"
 
 - name: Install zookeeper client package
   package:
-    name: "{{ item }}"
+    name: python3-kazoo
     state: present
-  with_items:
-  - python3-kazoo
   when: dcs == "zookeeper"
 
 - name: Install etcd client package
   package:
-    name: "{{ item }}"
+    name: python3-etcd
     state: present
-  with_items:
-  - python3-etcd
   when: dcs == "etcd"
 
 - name: Install vip-manager package
   package:
-    name: "{{ item }}"
+    name: vip-manager
     state: present
-  with_items:
-  - vip-manager
   when: vip is defined and vip != ""
 
 - name: Deploy patroni DCS config

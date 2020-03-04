@@ -14,23 +14,20 @@
 
 - name: Install generally useful packages
   package:
-    name: "{{ item }}"
+    name:
+      - tree
+      - vim
+      - less
+      - screen
+      - htop
+      - ssl-cert
+      - net-tools
     state: present
-  with_items:
-  - tree
-  - vim
-  - less
-  - screen
-  - htop
-  - ssl-cert
-  - net-tools
 
 - name: Install postgresql-common
   package:
-    name: "{{ item }}"
+    name: postgresql-common
     state: present
-  with_items:
-  - postgresql-common
 
 - name: Disable auto creation of PostgreSQL clusters
   lineinfile:
@@ -42,12 +39,11 @@
 
 - name: Install PostgreSQL Server
   package:
-    name: "{{ item }}"
+    name:
+      - "postgresql-{{ postgresql_major_version }}"
+      - "postgresql-contrib-{{ postgresql_major_version }}"
+      - "postgresql-client-{{ postgresql_major_version }}"
     state: present
-  with_items:
-    - "postgresql-{{ postgresql_major_version }}"
-    - "postgresql-contrib-{{ postgresql_major_version }}"
-    - "postgresql-client-{{ postgresql_major_version }}"
 
 - name: Copy pgpass from template
   template:

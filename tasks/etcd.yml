@@ -2,18 +2,14 @@
 
 - name: Install etcd package
   package:
-    name: "{{ item }}"
+    name: etcd-server
     state: present
-  with_items:
-  - etcd-server
   when: ((ansible_distribution_release != "stretch") and (ansible_distribution_release != "xenial"))
 
 - name: Install etcd package
   package:
-    name: "{{ item }}"
+    name: etcd
     state: present
-  with_items:
-  - etcd
   when: (ansible_distribution_release == "xenial")
 
 - name: Setup snapshot repository
@@ -25,10 +21,8 @@
 
 - name: Install etcd package
   package:
-    name: "{{ item }}"
+    name: etcd=2.3.7+dfsg-5
     state: present
-  with_items:
-  - etcd=2.3.7+dfsg-5
   when: (ansible_distribution_release == "stretch")
 
 - name: Enable client listen interface
