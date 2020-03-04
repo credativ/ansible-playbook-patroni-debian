@@ -2,10 +2,8 @@
 
 - name: Install consul package
   package:
-    name: "{{ item }}"
+    name: consul
     state: present
-  with_items:
-  - consul
 
   # At this point we deploy the server config.
 - name: Copy consul server configuration

@@ -9,11 +9,9 @@
 
 - name: Install systemd from backports
   apt:
-    name: "{{ item }}"
+    name: systemd
     default_release: stretch-backports
     state: latest
-  with_items:
-  - systemd
   when: (ansible_distribution_release == "stretch")
 
 - name: systemctl daemon-reload

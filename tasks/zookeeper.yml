@@ -2,10 +2,8 @@
 
 - name: Install zookeeper package
   package:
-    name: "{{ item }}"
+    name: zookeeperd
     state: present
-  with_items:
-  - zookeeperd
 
 - name: Disable ipv6
   lineinfile:
