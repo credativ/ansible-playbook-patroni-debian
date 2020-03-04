@@ -25,6 +25,14 @@
     state: present
   when: (ansible_distribution_release == "stretch")
 
+- name: Set member name
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_NAME=\"{{ ansible_hostname }}\""
+    regexp: ".*ETCD_NAME.*"
+  tags:
+    - config
+
 - name: Enable client listen interface
   lineinfile:
     dest: "/etc/default/etcd"
