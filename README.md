@@ -3,9 +3,17 @@ Ansible Playbook for Patroni on Debian
 
 This Ansible playbook allows to deploy a Patroni cluster using the `patroni`
 packages provided by Debian and/or PostgreSQL's `apt.postgresql.org`
-repository. Those packages have been integrated into Debian's
-`postgresql-common` framework and will look very similar to a regular
-stand-alone PostgreSQL install on Debian. For production use it should be
+repository.
+
+Those packages have been integrated into Debian's `postgresql-common`
+framework and will look very similar to a regular stand-alone PostgreSQL
+install on Debian. This is done by using `pg_createconfig_patroni` creating
+setting the `manual` flag in the `/etc/postgresql/$PG_VERSION/$CLUSTER_NAME/start.conf`
+config file. That will cause the postgres init script/systemd unit not to
+start that cluster automatically. Instead `patroni` will take care to start
+and manage that cluster.
+
+For production use it should be
 hardened (e.g. using Ansible Vault and encrypted communication between the DCS
 server and the Patroni clients).
 
