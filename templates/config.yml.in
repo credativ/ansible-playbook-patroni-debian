@@ -67,6 +67,13 @@ bootstrap:
       - host    replication     all             127.0.0.1/32            md5
       - host    replication     all             ::1/128                 md5
       - host    replication     all             @NETWORK@               md5
+  # Additional users to be created after initializing the cluster
+#  users:
+#    foo:
+#      password: bar
+#      options:
+#        - createrole
+#        - createdb
 
 postgresql:
   # Custom clone method
