@@ -103,6 +103,20 @@ postgresql:
       username: postgres
       password: {% if patroni_postgres_pass|length %}"{{ patroni_postgres_pass }}"{% endif %}
 
+# A rewind role can be specified in order for Patroni to use on PostgreSQL 11
+# or later for pg_rewind, i.e. rewinding a former primary after failover
+# without having to re-clone it. Patroni will assign this user the necessary
+# permissions (that only exist from PostgreSQL)
+{% if patroni_rewind_user|length %}
+    rewind:
+      username: "{{ patroni_rewind_user }}"
+      password: "{{ patroni_rewind_pass }}"
+{% else %}
+#    rewind:
+#      username: "rewind"
+#      password: "rewind-pass"
+{% endif %}
+
   parameters:
     unix_socket_directories: '/var/run/postgresql/'
     # Emulate default Debian/Ubuntu logging
