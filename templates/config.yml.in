@@ -90,7 +90,7 @@ postgresql:
   pg_clonecluster:
     command: /usr/share/patroni/pg_clonecluster_patroni
 
-  listen: "@HOSTIP@,127.0.0.1:@PORT@"
+  listen: "@HOSTIP@@LISTEN_VIP@,127.0.0.1:@PORT@"
   connect_address: @HOSTIP@:@PORT@
   use_unix_socket: true
   data_dir: {{ postgresql_data_dir_base }}/@VERSION@/@CLUSTER@
