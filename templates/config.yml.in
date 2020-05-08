@@ -20,6 +20,8 @@ restapi:
 
 bootstrap:
   # Custom bootstrap method
+  # The options --scope= and --datadir= are passed to the custom script by
+  # patroni and passed on to pg_createcluster by pg_createcluster_patroni
   method: pg_createcluster
   pg_createcluster:
     command: /usr/share/patroni/pg_createcluster_patroni
@@ -67,7 +69,11 @@ bootstrap:
       - host    replication     all             127.0.0.1/32            md5
       - host    replication     all             ::1/128                 md5
       - host    replication     all             @NETWORK@               md5
-  # Additional users to be created after initializing the cluster
+#  # Some possibly desired options for 'initdb'
+#  initdb:  # Note: It needs to be a list (some options need values, others are switches)
+#  - encoding: UTF8
+#  - data-checksums
+#  # Additional users to be created after initializing the cluster
 #  users:
 #    foo:
 #      password: bar
@@ -77,6 +83,8 @@ bootstrap:
 
 postgresql:
   # Custom clone method
+  # The options --scope= and --datadir= are passed to the custom script by
+  # patroni and passed on to pg_createcluster by pg_clonecluster_patroni
   create_replica_method:
     - pg_clonecluster
   pg_clonecluster:
