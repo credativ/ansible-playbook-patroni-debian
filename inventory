@@ -2,19 +2,13 @@
 ansible_connection=ssh
 ansible_ssh_user=root
 
-[consul]
-master
-
 [consul-clients:children]
-pgsql
+pgsql_servers
 
-[zookeeper]
+[dcs_servers]
 master
 
-[etcd]
-master
-
-[pgsql]
+[pgsql_servers]
 pg1
 pg2
 pg3

@@ -1,6 +1,12 @@
 ---
 dcs: "etcd"
-dcs_server: "{{ hostvars['master']['ansible_eth0']['ipv4']['address'] }}"
+#dcs_server_ips:
+#  - 10.0.0.1
+#  - 10.0.0.2
+dcs_port:
+  consul:    8500
+  zookeeper: 2181
+  etcd:      2379
 consul_datacenter: "global"
 consul_group: "consul"
 postgresql_cluster_name: "test"

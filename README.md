@@ -56,7 +56,7 @@ Variables
 The following useful variables can be set: 
 
  * `dcs` (`etcd` (default), `consul` or `zookeeper`)
- * `dcs_server` (default: IP of `master` node)
+ * `dcs_server_ips` (default: undefined, if set will override `dcs_servers` - see below)
  * `postgresql_cluster_name` (default: test)
  * `postgresql_major_version` (default: 11)
  * `postgresql_data_dir_base` (default: `/var/lib/postgresql`)
@@ -64,6 +64,9 @@ The following useful variables can be set:
  * `patroni_replication_pass`
  * `patroni_postgres_pass`
  * `vip`
+
+If `dcs_server_ips` is set, then it will be used. If not set, then the IPs of
+hosts of the `dcs_servers` inventory group will be used.
 
 Example: `ansible-playbook -i inventory -e dcs=consul patroni.yml`
 
