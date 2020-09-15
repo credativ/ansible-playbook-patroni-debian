@@ -33,6 +33,14 @@
   tags:
     - config
 
+- name: Set data directory
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_DATA_DIR=\"/var/lib/etcd/patroni\""
+    regexp: ".*ETCD_DATA_DIR.*"
+  tags:
+    - config
+
 - name: Listen for other cluster peers
   lineinfile:
     dest: "/etc/default/etcd"
