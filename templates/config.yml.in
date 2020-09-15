@@ -90,7 +90,11 @@ postgresql:
   pg_clonecluster:
     command: /usr/share/patroni/pg_clonecluster_patroni
 
-  listen: "@HOSTIP@@LISTEN_VIP@,127.0.0.1:@PORT@"
+  # Listen to all interfaces by default, this makes vip-manager work
+  # out-of-the-box without having to set net.ipv4.ip_nonlocal_bind or similar.
+  # If you prefer to only listen on some interfaces, edit the below:
+  #listen: "@HOSTIP@@LISTEN_VIP@,127.0.0.1:@PORT@"
+  listen: "*:@PORT@"
   connect_address: @HOSTIP@:@PORT@
   use_unix_socket: true
   data_dir: {{ postgresql_data_dir_base }}/@VERSION@/@CLUSTER@
