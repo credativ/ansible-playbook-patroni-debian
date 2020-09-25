@@ -1,6 +1,13 @@
 ---
-- name: DCS
-  hosts: "{{ dcs }}"
+- name: setup facts
+  hosts: all
+  vars_files:
+    - vars.yml
+  tasks:
+    - include: tasks/set_dcs_ips.yml
+
+- name: setup DCS servers
+  hosts: dcs_servers
   vars_files:
     - vars.yml
   become: true
@@ -10,5 +17,27 @@
   tasks:
     - include: tasks/{{ dcs }}.yml
 
-- name: PostgreSQL Server Playbook
-  import_playbook: pgsql-server.yml
+
+- name: setup Postgres Servers
+  hosts: pgsql_servers
+  become: true
+  become_user: root
+  become_method: sudo
+  vars_files:
+    - vars.yml
+
+  pre_tasks:
+    - name: Gather facts from ALL hosts (regardless of limit or tags)
+      setup:
+      delegate_to: "{{ item }}"
+      delegate_facts: True
+      when: hostvars[item]['ansible_default_ipv4'] is not defined
+      with_items: "{{ groups['all'] }}"
+      tags:
+        - config
+
+  tasks:
+    - include: tasks/consul.yml
+      when: dcs == "consul"
+    - include: tasks/postgresql.yml
+    - include: tasks/patroni.yml

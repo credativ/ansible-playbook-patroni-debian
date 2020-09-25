@@ -25,10 +25,42 @@
     state: present
   when: (ansible_distribution_release == "stretch")
 
+- name: Set member name
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_NAME=\"{{ ansible_hostname }}\""
+    regexp: ".*ETCD_NAME.*"
+  tags:
+    - config
+
+- name: Set data directory
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_DATA_DIR=\"/var/lib/etcd/patroni\""
+    regexp: ".*ETCD_DATA_DIR.*"
+  tags:
+    - config
+
+- name: Listen for other cluster peers
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_LISTEN_PEER_URLS=\"http://{{ hostvars[ansible_hostname]['ansible_eth0']['ipv4']['address'] }}:2380\""
+    regexp: ".*ETCD_LISTEN_PEER_URLS.*"
+  tags:
+    - config
+
+- name: Setup advertised peer communication URL
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_INITIAL_ADVERTISE_PEER_URLS=\"http://{{ hostvars[ansible_hostname]['ansible_eth0']['ipv4']['address'] }}:2380\""
+    regexp: ".*ETCD_INITIAL_ADVERTISE_PEER_URLS.*"
+  tags:
+    - config
+
 - name: Enable client listen interface
   lineinfile:
     dest: "/etc/default/etcd"
-    line: "ETCD_LISTEN_CLIENT_URLS=\"http://localhost:2379,http://{{ hostvars['master']['ansible_eth0']['ipv4']['address'] }}:2379\""
+    line: "ETCD_LISTEN_CLIENT_URLS=\"http://localhost:2379,http://{{ hostvars[ansible_hostname]['ansible_eth0']['ipv4']['address'] }}:2379\""
     regexp: ".*ETCD_LISTEN_CLIENT_URLS.*"
   tags:
     - config
@@ -36,8 +68,16 @@
 - name: Advertise client interface
   lineinfile:
     dest: "/etc/default/etcd"
-    line: "ETCD_ADVERTISE_CLIENT_URLS=\"http://{{ hostvars['master']['ansible_eth0']['ipv4']['address'] }}:2379,http://{{ hostvars['master']['ansible_eth0']['ipv4']['address'] }}:4001\""
+    line: "ETCD_ADVERTISE_CLIENT_URLS=\"{% for ip in dcs_ips %}http://{{ ip }}:2379{% if not loop.last %},{% endif %}{% endfor %}\""
     regexp: ".*ETCD_ADVERTISE_CLIENT_URLS.*"
+  tags:
+    - config
+
+- name: Setup URLs of initials members
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_INITIAL_CLUSTER=\"{% for host in groups['dcs_servers'] %}{{ host }}=http://{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:2380{% if not loop.last %},{% endif %}{% endfor %}\""
+    regexp: ".*ETCD_INITIAL_CLUSTER.*"
   tags:
     - config
 
