@@ -1,0 +1,3 @@
+- set_fact:
+    pgsql_server_ips="{{ pgsql_server_ips|default([]) + [hostvars[item]['ansible_eth0']['ipv4']['address']] }}"
+  with_items: "{{ groups['pgsql_servers'] }}"

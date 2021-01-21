@@ -12,3 +12,6 @@ master
 pg1
 pg2
 pg3
+
+#[haproxy_server]
+#master

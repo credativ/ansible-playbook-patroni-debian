@@ -11,6 +11,7 @@ consul_datacenter: "global"
 consul_group: "consul"
 postgresql_cluster_name: "test"
 postgresql_major_version: "11"
+postgresql_port: "5432"
 postgresql_data_dir_base: "/var/lib/postgresql"
 patroni_replication_user: "replicator"
 patroni_replication_pass: "replicator"
@@ -25,5 +26,20 @@ patroni_postgres_pass: ""
 # permissions. Note: "pg_rewind" is a reserved role and cannot be used.
 patroni_rewind_user: "postgres_rewind"
 patroni_rewind_pass: "postgres_rewind"
+# The Patroni REST port
+patroni_port: 8008
 # vip-manager will manage the vip on each node if set
 #vip: "10.0.1.1"
+# If HAProxy is to be deployed on one of the servers, add a "[haproxy_server]"
+# section to the inventory, make sure "postgresql_port" and "patroni_port" are
+# set and uncomment/edit the following HAProxy ports to be used by
+# clients/applications:
+#haproxy_write_port: 5432
+#haproxy_read_port: 5433
+# Uncomment this if the primary should also get read-only queries
+#haproxy_primary_read_scale: "on"
+# By default HAProxy uses the "haproxy" user for the read-only health check if
+# haproxy_primary_read_scale is enabled. If this user does not exist, error
+# messages will be logged in the Postgres log. Alternatively, another can be
+# specified:
+#haproxy_health_check_user: "haproxy"
