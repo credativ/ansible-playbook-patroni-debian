@@ -12,7 +12,11 @@ consul_group: "consul"
 postgresql_cluster_name: "test"
 postgresql_major_version: "11"
 postgresql_port: "5432"
-postgresql_data_dir_base: "/var/lib/postgresql"
+# PostgreSQL base directory. If not set, @DATADIR_BASE@ is used, which is
+# evaluated by pg_createconfig_patroni to either the default
+# (/var/lib/postgresql) or what the data_directory variable (without %v/%c) in
+# /etc/postgresql-common/createcluster.conf is set to.
+#postgresql_data_dir_base: "/var/lib/postgresql"
 patroni_replication_user: "replicator"
 patroni_replication_pass: "replicator"
 # Password for the postgres superuser. Usually setting a password is

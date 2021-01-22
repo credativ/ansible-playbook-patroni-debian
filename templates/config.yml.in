@@ -97,7 +97,7 @@ postgresql:
   listen: "*:@PORT@"
   connect_address: @HOSTIP@:@PORT@
   use_unix_socket: true
-  data_dir: {{ postgresql_data_dir_base }}/@VERSION@/@CLUSTER@
+  data_dir: {{ postgresql_data_dir_base | default("@DATADIR_BASE@") }}/@VERSION@/@CLUSTER@
   bin_dir: /usr/lib/postgresql/@VERSION@/bin
   config_dir: /etc/postgresql/@VERSION@/@CLUSTER@
   pgpass: /var/lib/postgresql/@VERSION@-@CLUSTER@.pgpass
