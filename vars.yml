@@ -9,6 +9,9 @@ dcs_port:
   etcd:      2379
 consul_datacenter: "global"
 consul_group: "consul"
+# Whether to use the regular or testing pgdg APT repository, values can be
+# `pgdg' (default) or `pgdg-testing'.
+#pgdg_repo: pgdg-testing
 postgresql_cluster_name: "test"
 postgresql_major_version: "11"
 postgresql_port: "5432"
