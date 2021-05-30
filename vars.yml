@@ -12,8 +12,8 @@ consul_group: "consul"
 # Whether to use the regular or testing pgdg APT repository, values can be
 # `pgdg' (default) or `pgdg-testing'.
 #pgdg_repo: pgdg-testing
-postgresql_cluster_name: "test"
-postgresql_major_version: "11"
+postgresql_cluster_name: "main"
+postgresql_major_version: "14"
 postgresql_port: "5432"
 # PostgreSQL base directory. If not set, @DATADIR_BASE@ is used, which is
 # evaluated by pg_createconfig_patroni to either the default
