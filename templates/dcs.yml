@@ -4,18 +4,9 @@ consul:
   host: "127.0.0.1:{{ dcs_port[dcs] }}"
 {% endif
  %}
-{% if dcs == 'zookeeper' %}
-zookeeper:
+{% if dcs == 'zookeeper' or dcs == 'etcd' or dcs == 'etcd3' %}
+{{ dcs }}:
   hosts:
-{% endif
- %}
-{%
-   if dcs == 'etcd' %}
-etcd:
-  hosts:
-{% endif
- %}
-{% if dcs == 'zookeeper' or dcs == 'etcd' %}
 {%   for ip in dcs_ips
  %}
     - {{ ip }}:{{ dcs_port[dcs] }}

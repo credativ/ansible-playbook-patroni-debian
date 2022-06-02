@@ -7,6 +7,7 @@ dcs_port:
   consul:    8500
   zookeeper: 2181
   etcd:      2379
+  etcd3:     2379
 consul_datacenter: "global"
 consul_group: "consul"
 # Whether to use the regular or testing pgdg APT repository, values can be
