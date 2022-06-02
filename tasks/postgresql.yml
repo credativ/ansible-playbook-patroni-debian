@@ -27,6 +27,7 @@
 - name: Install postgresql-common
   package:
     name: postgresql-common
+    default_release: "{{ ansible_lsb.codename }}-{{ pgdg_repo | default('pgdg') }}"
     state: present
 
 - name: Disable auto creation of PostgreSQL clusters
