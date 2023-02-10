@@ -30,7 +30,13 @@
   package:
     name: vip-manager
     state: present
-  when: vip is defined and vip != ""
+  when: vip is defined and vip != "" and dcs == "etcd"
+
+- name: Install vip-manager2 package
+  package:
+    name: vip-manager2
+    state: present
+  when: vip is defined and vip != "" and dcs == "etcd3"
 
 - name: Deploy patroni DCS config
   template:
