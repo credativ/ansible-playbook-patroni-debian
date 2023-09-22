@@ -26,6 +26,12 @@
     state: present
   when: dcs == "etcd"
 
+- name: Install etcd3 client package
+  package:
+    name: python3-etcd3
+    state: present
+  when: dcs == "etcd3"
+
 - name: Install vip-manager package
   package:
     name: vip-manager
