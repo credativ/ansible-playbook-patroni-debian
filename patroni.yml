@@ -1,57 +1,64 @@
 ---
-- name: setup facts
+
+- name: Setup facts
   hosts: all
   vars_files:
     - vars.yml
   pre_tasks:
     - name: Gather facts from ALL hosts (regardless of limit or tags)
-      setup:
+      ansible.builtin.setup:
       delegate_to: "{{ item }}"
-      delegate_facts: True
+      delegate_facts: true
       when: hostvars[item]['ansible_default_ipv4'] is not defined
       with_items: "{{ groups['all'] }}"
   tasks:
-    - include: tasks/set_dcs_ips.yml
-    - include: tasks/set_pgsql_servers_ips.yml
+    - name: Import tasks from tasks/set_dcs_ips.yml
+      ansible.builtin.import_tasks: tasks/set_dcs_ips.yml
+    - name: Import tasks from tasks/set_pgsql_servers_ips.yml
+      ansible.builtin.import_tasks: tasks/set_pgsql_servers_ips.yml
 
-- name: setup DCS servers
+- name: Setup DCS servers
   hosts: dcs_servers
   vars_files:
     - vars.yml
   become: true
   become_user: root
-  become_method: sudo
-
+  become_method: ansible.builtin.sudo
   tasks:
-    - include: tasks/{{ dcs }}.yml
+    - name: "Import tasks from tasks/ _dcs_ .yml"
+      ansible.builtin.import_tasks: tasks/{{ dcs }}.yml
 
-- name: setup HAProxy server
+- name: Setup HAProxy server
   hosts: haproxy_server
   vars_files:
     - vars.yml
   tasks:
-    - include: tasks/haproxy.yml
+    - name: Import tasks from tasks/haproxy.yml
+      ansible.builtin.import_tasks: tasks/haproxy.yml
 
-- name: setup Postgres Servers
+- name: Setup Postgres Servers
   hosts: pgsql_servers
   become: true
   become_user: root
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   vars_files:
     - vars.yml
 
   pre_tasks:
     - name: Gather facts from ALL hosts (regardless of limit or tags)
-      setup:
+      ansible.builtin.setup:
       delegate_to: "{{ item }}"
-      delegate_facts: True
+      delegate_facts: true
       when: hostvars[item]['ansible_default_ipv4'] is not defined
       with_items: "{{ groups['all'] }}"
       tags:
         - config
 
   tasks:
-    - include: tasks/consul.yml
+    - name: Import tasks from tasks/consul.yml
+      ansible.builtin.import_tasks: tasks/consul.yml
       when: dcs == "consul"
-    - include: tasks/postgresql.yml
-    - include: tasks/patroni.yml
+    - name: Import tasks from tasks/postgresql.yml
+      ansible.builtin.import_tasks: tasks/postgresql.yml
+    - name: Import tasks from tasks/patroni.yml
+      ansible.builtin.import_tasks: tasks/patroni.yml
