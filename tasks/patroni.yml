@@ -1,51 +1,52 @@
 ---
 
-- import_tasks: systemd-backports.yml
+- name: Import systemd-backports.yml
+  ansible.builtin.import_tasks: systemd-backports.yml
   when: (ansible_distribution_release == "stretch")
 
 - name: Install patroni package
-  package:
+  ansible.builtin.package:
     name: patroni
     state: present
 
 - name: Install consul client package
-  package:
+  ansible.builtin.package:
     name: python3-consul
     state: present
   when: dcs == "consul"
 
 - name: Install zookeeper client package
-  package:
+  ansible.builtin.package:
     name: python3-kazoo
     state: present
   when: dcs == "zookeeper"
 
 - name: Install etcd client package
-  package:
+  ansible.builtin.package:
     name: python3-etcd
     state: present
   when: dcs == "etcd"
 
 - name: Install etcd3 client package
-  package:
+  ansible.builtin.package:
     name: python3-etcd3
     state: present
   when: dcs == "etcd3"
 
 - name: Install vip-manager package
-  package:
+  ansible.builtin.package:
     name: vip-manager
     state: present
   when: vip is defined and vip != "" and dcs == "etcd"
 
 - name: Install vip-manager2 package
-  package:
+  ansible.builtin.package:
     name: vip-manager2
     state: present
   when: vip is defined and vip != "" and dcs == "etcd3"
 
 - name: Deploy patroni DCS config
-  template:
+  ansible.builtin.template:
     src: templates/dcs.yml
     dest: /etc/patroni/dcs.yml
     mode: 0640
@@ -55,7 +56,7 @@
     - config
 
 - name: Deploy patroni config templates
-  template:
+  ansible.builtin.template:
     src: templates/config.yml.in
     dest: /etc/patroni/config.yml.in
     mode: 0640
@@ -65,25 +66,25 @@
     - config
 
 - name: Create patroni configuration
-  command: pg_createconfig_patroni --force --hostip={{ ansible_default_ipv4.address }} {% if postgresql_port is defined %}--port={{ postgresql_port }}{% endif %} {% if vip is defined %}--vip={{ vip }} {% if dcs_ips | length > 1 %}--endpoint=http://{{ ansible_default_ipv4.address }}:2379{% endif %}{% endif %} {{ postgresql_major_version }} {{ postgresql_cluster_name }}
+  ansible.builtin.command: pg_createconfig_patroni --force --hostip={{ ansible_default_ipv4.address }} {% if postgresql_port is defined %}--port={{ postgresql_port }}{% endif %} {% if vip is defined %}--vip={{ vip }} {% if dcs_ips | length > 1 %}--endpoint=http://{{ ansible_default_ipv4.address }}:2379{% endif %}{% endif %} {{ postgresql_major_version }} {{ postgresql_cluster_name }}
   tags:
     - config
 
-- name: systemctl daemon-reload / start patroni
-  systemd:
-    daemon_reload: yes
+- name: Systemctl daemon-reload / start patroni
+  ansible.builtin.systemd:
+    daemon_reload: true
     name: patroni@{{ postgresql_major_version }}-{{ postgresql_cluster_name }}
     state: restarted
-    enabled: yes
+    enabled: true
   tags:
     - config
 
-- name: systemctl daemon-reload / start vip-manager
-  systemd:
-    daemon_reload: yes
+- name: Systemctl daemon-reload / start vip-manager
+  ansible.builtin.systemd:
+    daemon_reload: true
     name: vip-manager@{{ postgresql_major_version }}-{{ postgresql_cluster_name }}
     state: restarted
-    enabled: yes
+    enabled: true
   when: vip is defined and vip != ""
   tags:
     - config

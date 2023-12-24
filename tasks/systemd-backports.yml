@@ -1,19 +1,19 @@
 ---
 
 - name: Setup backports repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb http://ftp.debian.org/debian stretch-backports main'
     filename: 'backports'
     update_cache: true
   when: (ansible_distribution_release == "stretch")
 
 - name: Install systemd from backports
-  apt:
+  ansible.builtin.apt:
     name: systemd
     default_release: stretch-backports
     state: latest
   when: (ansible_distribution_release == "stretch")
 
-- name: systemctl daemon-reload
-  systemd:
-    daemon_reload: yes
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true

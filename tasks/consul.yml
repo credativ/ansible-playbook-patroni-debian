@@ -1,13 +1,13 @@
 ---
 
 - name: Install consul package
-  package:
+  ansible.builtin.package:
     name: consul
     state: present
 
-  # At this point we deploy the server config.
+# At this point we deploy the server config.
 - name: Copy consul server configuration
-  template:
+  ansible.builtin.template:
     src: templates/consul-server.json
     dest: /etc/consul.d/server.json
     mode: 0644
@@ -15,9 +15,9 @@
   tags:
     - config
 
-  # At this point we deploy the client config.
+# At this point we deploy the client config.
 - name: Copy consul client configuration
-  template:
+  ansible.builtin.template:
     src: templates/consul-client.json
     dest: /etc/consul.d/client.json
     mode: 0644
@@ -26,13 +26,14 @@
     - config
 
 - name: Copy consul-server.service file
-  copy:
+  ansible.builtin.copy:
     src: files/consul.service
     dest: /etc/systemd/system/consul.service
-    
-- name: systemctl daemon-reload / start consul
-  systemd:
-    daemon_reload: yes
+    mode: 0644
+
+- name: Systemctl daemon-reload / start consul
+  ansible.builtin.systemd:
+    daemon_reload: true
     name: consul
     state: restarted
-    enabled: yes
+    enabled: true

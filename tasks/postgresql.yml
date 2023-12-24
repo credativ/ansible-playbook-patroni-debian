@@ -1,19 +1,20 @@
 ---
 
 - name: Get pgdg key
-  apt_key:
+  ansible.builtin.apt_key:
     data: "{{ lookup('file', 'pgapt-key.ACCC4CF8.asc') }}"
     id: ACCC4CF8
     state: present
 
 - name: Setup pgdg repository
-  apt_repository:
-    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-{{ pgdg_repo | default('pgdg') }} main {{ postgresql_major_version}}"
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-{{ pgdg_repo | default('pgdg') }} main {{ postgresql_major_version }}
     filename: 'pgdg'
     update_cache: true
 
 - name: Install generally useful packages
-  package:
+  ansible.builtin.package:
     name:
       - tree
       - vim
@@ -25,21 +26,21 @@
     state: present
 
 - name: Install postgresql-common
-  package:
+  ansible.builtin.package:
     name: postgresql-common
     default_release: "{{ ansible_lsb.codename }}-{{ pgdg_repo | default('pgdg') }}"
     state: present
 
 - name: Disable auto creation of PostgreSQL clusters
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/postgresql-common/createcluster.conf"
-    line: "create_main_cluster = false" 
+    line: "create_main_cluster = false"
     regexp: ".*create_main_cluster.*"
   tags:
     - config
 
 - name: Install PostgreSQL Server
-  package:
+  ansible.builtin.package:
     name:
       - "postgresql-{{ postgresql_major_version }}"
       - "postgresql-contrib-{{ postgresql_major_version }}"
@@ -48,7 +49,7 @@
     state: present
 
 - name: Copy pgpass from template
-  template:
+  ansible.builtin.template:
     src: templates/postgres_pgpass
     dest: /var/lib/postgresql/.pgpass
     mode: 0600

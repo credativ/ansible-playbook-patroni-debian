@@ -83,7 +83,7 @@
 
 - name: systemctl daemon-reload / start etcd
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
     name: etcd
     state: restarted
-    enabled: yes
+    enabled: true

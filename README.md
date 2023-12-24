@@ -49,11 +49,11 @@ unstable (sid), as well as Ubuntu LTS 18.04 (bionic). As the
 PostgreSQL versions can be installed in principle.
 
 Note that Consul is unsupported as DCS on Debian 9 (stretch).
- 
+
 Variables
 ---------
 
-The following useful variables can be set: 
+The following useful variables can be set:
 
  * `dcs` (`etcd` (default), `consul` or `zookeeper`)
  * `dcs_server_ips` (default: undefined, if set will override `dcs_servers` - see below)
