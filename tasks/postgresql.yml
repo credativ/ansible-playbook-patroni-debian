@@ -1,17 +1,5 @@
 ---
 
-- name: Get pgdg key
-  apt_key:
-    data: "{{ lookup('file', 'pgapt-key.ACCC4CF8.asc') }}"
-    id: ACCC4CF8
-    state: present
-
-- name: Setup pgdg repository
-  apt_repository:
-    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-{{ pgdg_repo | default('pgdg') }} main {{ postgresql_major_version}}"
-    filename: 'pgdg'
-    update_cache: true
-
 - name: Install generally useful packages
   package:
     name:
@@ -24,6 +12,18 @@
       - net-tools
       - gnupg
     state: present
+
+- name: Get pgdg key
+  apt_key:
+    data: "{{ lookup('file', 'pgapt-key.ACCC4CF8.asc') }}"
+    id: ACCC4CF8
+    state: present
+
+- name: Setup pgdg repository
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-{{ pgdg_repo | default('pgdg') }} main {{ postgresql_major_version}}"
+    filename: 'pgdg'
+    update_cache: true
 
 - name: Install postgresql-common
   package:
