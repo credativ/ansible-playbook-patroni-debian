@@ -81,6 +81,14 @@
   tags:
     - config
 
+- name: Enable V2 API
+  lineinfile:
+    dest: "/etc/default/etcd"
+    line: "ETCD_ENABLE_V2=\"true\""
+    regexp: ".*ETCD_ENABLE_V2.*"
+  tags:
+    - config
+
 - name: systemctl daemon-reload / start etcd
   systemd:
     daemon_reload: yes
