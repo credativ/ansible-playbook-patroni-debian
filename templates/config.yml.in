@@ -62,13 +62,13 @@ bootstrap:
       # want to use pg_rewind, you need to uncomment the fourth entry.
       pg_hba:
       - local   all             all                                     peer
-      - host    all             all             127.0.0.1/32            md5
-      - host    all             all             ::1/128                 md5
-      - host    all             all             @NETWORK@               md5
+      - host    all             all             127.0.0.1/32            scram-sha-256
+      - host    all             all             ::1/128                 scram-sha-256
+      - host    all             all             @NETWORK@               scram-sha-256
       - local   replication     all                                     peer
-      - host    replication     all             127.0.0.1/32            md5
-      - host    replication     all             ::1/128                 md5
-      - host    replication     all             @NETWORK@               md5
+      - host    replication     all             127.0.0.1/32            scram-sha-256
+      - host    replication     all             ::1/128                 scram-sha-256
+      - host    replication     all             @NETWORK@               scram-sha-256
 #  # Some possibly desired options for 'initdb'
 #  initdb:  # Note: It needs to be a list (some options need values, others are switches)
 #  - encoding: UTF8
