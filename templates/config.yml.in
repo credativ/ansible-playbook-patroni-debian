@@ -107,13 +107,14 @@ postgresql:
       password: "{{ patroni_replication_pass }}"
 # A superuser role is required in order for Patroni to manage the local
 # Postgres instance.  If the option `use_unix_socket' is set to `true', then
-# specifying an empty password results in no md5 password for the superuser
-# being set and sockets being used for authentication. The `password:' line is
-# nevertheless required.  Note that pg_rewind will not work if no md5 password
-# is set.
+# not specifying a password results in no password for the superuser being set
+# and sockets being used for authentication.  Note that pg_rewind will not work
+# if no password is set unless a rewind user is configured, see below.
     superuser:
       username: postgres
-      password: {% if patroni_postgres_pass|length %}"{{ patroni_postgres_pass }}"{% endif %}
+{% if patroni_postgres_pass|length %}
+      password: "{{ patroni_postgres_pass }}"
+{% endif %}
 
 # A rewind role can be specified in order for Patroni to use on PostgreSQL 11
 # or later for pg_rewind, i.e. rewinding a former primary after failover
