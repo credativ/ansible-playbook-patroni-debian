@@ -1,5 +1,9 @@
 ---
 
+- name: Update package cache
+  apt:
+    update_cache: yes
+
 - name: Install generally useful packages
   package:
     name:
